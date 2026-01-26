@@ -1,0 +1,21 @@
+confidence：0.0 ,mAP结果：71.20828
+confidence：0.05 ,mAP结果：71.15819
+confidence：0.1 ,mAP结果：70.57590
+confidence：0.15000000000000002 ,mAP结果：69.23878
+confidence：0.2 ,mAP结果：66.95202
+confidence：0.25 ,mAP结果：63.17789
+confidence：0.30 ,mAP结果：58.01878
+confidence：0.35 ,mAP结果：50.31130
+confidence：0.40 ,mAP结果：43.72619
+confidence：0.45 ,mAP结果：35.80313
+confidence：0.5 ,mAP结果：28.43901
+confidence：0.55 ,mAP结果：19.71947
+confidence：0.60,mAP结果：14.85149
+confidence：0.65 ,mAP结果：10.89109
+confidence：0.70 ,mAP结果：5.94059
+confidence：0.75 ,mAP结果：3.96040
+confidence：0.8 ,mAP结果：2.97030
+confidence：0.85 ,mAP结果：0.99010
+confidence：0.90 ,mAP结果：0.0
+confidence：0.95 ,mAP结果：0.0
+confidence：1.00 ,mAP结果：0.0

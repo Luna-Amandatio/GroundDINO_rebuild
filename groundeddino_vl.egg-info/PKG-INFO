@@ -1,0 +1,288 @@
+Metadata-Version: 2.4
+Name: groundeddino-vl
+Version: 1.1.1
+Summary: GroundedDINO-VL vision-language backend
+Author-email: Trent Adams <ghostcipher02@gmail.com>
+Maintainer-email: ghostcipher1 <ghostcipher1@users.noreply.github.com>
+License: Apache-2.0
+Project-URL: Homepage, https://github.com/ghostcipher1/GroundedDINO-VL
+Project-URL: Repository, https://github.com/ghostcipher1/GroundedDINO-VL
+Project-URL: Issue Tracker, https://github.com/ghostcipher1/GroundedDINO-VL/issues
+Project-URL: Documentation, https://github.com/ghostcipher1/GroundedDINO-VL#readme
+Project-URL: Original Source, https://github.com/IDEA-Research/GroundingDINO
+Project-URL: Legacy Fork, https://github.com/ghostcipher1/groundingdino-cu128
+Keywords: groundeddino-vl,groundeddino_vl,computer-vision,object-detection,grounding,vision-language,transformer,pytorch,cuda,groundingdino
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Scientific/Engineering :: Image Recognition
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+License-File: NOTICE
+Requires-Dist: torch<3.0,>=2.7.0
+Requires-Dist: torchvision>=0.18.0
+Requires-Dist: transformers>=4.30.0
+Requires-Dist: addict>=2.4.0
+Requires-Dist: yapf>=0.40.0
+Requires-Dist: timm>=0.9.0
+Requires-Dist: numpy>=1.24.0
+Requires-Dist: opencv-python>=4.8.0
+Requires-Dist: supervision<1.0,>=0.4.0
+Requires-Dist: pycocotools>=2.0.0
+Requires-Dist: fastapi>=0.95.0
+Requires-Dist: uvicorn>=0.21.0
+Requires-Dist: SQLAlchemy<3.0,>=2.0
+Requires-Dist: tqdm>=4.66.0
+Requires-Dist: httpx>=0.24.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Requires-Dist: flake8>=6.0; extra == "dev"
+Requires-Dist: black==25.11.0; extra == "dev"
+Requires-Dist: isort>=5.12; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"
+Requires-Dist: pylint>=2.17; extra == "dev"
+Requires-Dist: bandit>=1.7; extra == "dev"
+Requires-Dist: safety>=2.3; extra == "dev"
+Requires-Dist: build>=1.0; extra == "dev"
+Requires-Dist: twine>=4.0; extra == "dev"
+Provides-Extra: onnx
+Requires-Dist: onnx>=1.12; extra == "onnx"
+Requires-Dist: onnxruntime>=1.14; extra == "onnx"
+Provides-Extra: trt
+Provides-Extra: jetson
+Dynamic: license-file
+
+# GroundedDINO-VL
+
+**Modern Vision-Language Foundation Models for PyTorch 2.9 + CUDA 13.0**
+
+[![CI](https://github.com/ghostcipher1/GroundedDINO-VL/actions/workflows/ci.yml/badge.svg)](https://github.com/ghostcipher1/GroundedDINO-VL/actions/workflows/ci.yml)
+![CUDA-capable (Ampere / Ada / Blackwell)
+](https://img.shields.io/badge/CUDA-capable-76B900?logo=nvidia&logoColor=white)
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
+[![PyPI](https://img.shields.io/badge/PyPI-groundeddino_vl-blue.svg)](https://pypi.org/project/groundeddino_vl/)
+[![Downloads](https://img.shields.io/pypi/dm/groundeddino_vl.svg)](https://pypi.org/project/groundeddino_vl/)
+
+---
+
+## Overview
+
+**GroundedDINO-VL** is a modern, independent vision-language framework derived from [GroundingDINO](https://github.com/IDEA-Research/GroundingDINO), fully refactored and maintained for current GPU infrastructure with PyTorch 2.9 and CUDA 13.0 support.
+
+This project is now **fully independent** from the original GroundingDINO implementation, with a clean, modern codebase while maintaining full compatibility with GroundingDINO model weights and providing backward compatibility for existing code.
+
+### Key Features
+
+- **Fully Independent**: Clean break from legacy code - single source of truth in `groundeddino_vl/`
+- **Modern Stack**: PyTorch 2.9 + CUDA 13.0 support
+- **Zero-Shot Detection**: Detect objects using natural language descriptions
+- **High Performance**: Compatible with GroundingDINO's COCO zero-shot 52.5 AP weights
+- **Backward Compatible**: Legacy `groundingdino` namespace supported via compatibility shim
+- **Clean Architecture**: Refactored package structure with better organization
+- **Label Studio Integration**: Real-time ML backend for auto-annotation workflows
+- **95% Package Size Reduction**: Eliminated duplicate code (9,000+ lines removed)
+
+---
+
+## Example Results
+
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/f83fc105-00ff-4eca-a3bf-6711a5b47fdb" width="400"></td>
+    <td><img src="https://github.com/user-attachments/assets/5ce29e8c-f3a3-4511-ad9a-ce022a1eadf9" width="400"></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/5314ad18-b34c-472a-aaa8-2f3a42465da3" width="400"></td>
+    <td><img src="https://github.com/user-attachments/assets/a91752f2-b659-486e-b141-e13d6b80937f" width="400"></td>
+  </tr>
+</table>
+
+---
+
+## Documentation Index
+
+### Getting Started
+- [Installation Guide](docs/INSTALLATION.md) - System requirements, installation methods, and verification
+- [Quick Start Guide](docs/QUICKSTART.md) - Basic usage examples and common workflows
+- [API Reference](docs/API_REFERENCE.md) - Complete API documentation with examples
+- **[Batch Inference](BATCH_INFERENCE_QUICKSTART.txt)** - Process thousands of images with COCO/YOLO/Label Studio export
+
+### Advanced Topics
+- [Label Studio Integration](docs/LABEL_STUDIO.md) - Auto-annotation and ML backend setup
+- [Building from Source](BUILD_GUIDE.md) - Detailed compilation and build instructions
+- [Project Structure](docs/PROJECT_STRUCTURE.md) - Codebase organization and architecture
+
+### Migration & Compatibility
+- **[GroundingDINO Migration Guide](docs/MIGRATION_FROM_GROUNDINGDINO.md)** - Migrating from legacy `groundingdino` namespace
+- [API Migration Guide](docs/MIGRATION_TO_API.md) - Upgrading from previous versions
+- **Independence Note**: GroundedDINO-VL is now fully independent with all code in `groundeddino_vl/`. The `groundingdino/` namespace provides backward compatibility via a lightweight shim.
+
+### Integration & Deployment
+- [Testing & Validation](docs/TESTING.md) - Test suite, CI/CD, and quality assurance
+- [Security Best Practices](docs/SECURITY.md) - Security guidelines and considerations
+
+### Contributing & Support
+- [Contributing Guidelines](CONTRIBUTING.md) - How to contribute to the project
+- [Changelog](docs/CHANGELOG.md) - Version history and release notes
+- [Troubleshooting](docs/TROUBLESHOOTING.md) - Common issues and solutions
+
+---
+
+## Quick Installation
+
+### Via PyPI (Recommended)
+
+```bash
+pip install groundeddino_vl
+```
+
+### With GPU Support (CUDA 12.8)
+
+```bash
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+pip install groundeddino_vl
+```
+
+### From Source
+
+```bash
+git clone https://github.com/ghostcipher1/GroundedDINO-VL.git
+cd GroundedDINO-VL
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+pip install -e .
+```
+
+**See [Installation Guide](docs/INSTALLATION.md) for detailed instructions and system requirements.**
+
+---
+
+## Quick Start Example
+
+```python
+from groundeddino_vl import load_model, predict, annotate
+
+# Load model (auto-downloads weights on first run)
+model = load_model(
+    config_path="path/to/config.py",
+    checkpoint_path="path/to/weights.pth",
+    device="cuda"
+)
+
+# Run detection with text prompt
+result = predict(
+    model=model,
+    image="path/to/image.jpg",
+    text_prompt="car . person . dog",
+    box_threshold=0.35,
+    text_threshold=0.25,
+)
+
+# Visualize results
+annotated_image = annotate(image, result, show_labels=True)
+```
+
+**See [Quick Start Guide](docs/QUICKSTART.md) for more examples and usage patterns.**
+
+---
+
+## Label Studio Integration
+
+<img alt="LabelStudio logo" src="https://user-images.githubusercontent.com/12534576/192582340-4c9e4401-1fe6-4dbb-95bb-fdbba5493f61.png" width="200" />
+
+GroundedDINO-VL includes an optional Label Studio ML Backend for real-time auto-annotation:
+
+- On-demand inference via FastAPI service
+- Auto-labeling with the "magic wand" feature
+- Batch annotation assistance
+- PostgreSQL/SQLite history logging
+
+**Complete setup guide**: [Label Studio Integration Documentation](docs/LABEL_STUDIO.md)
+
+---
+
+## Research Foundation
+
+This project is based on the groundbreaking work:
+
+**Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection**
+
+```bibtex
+@article{liu2023grounding,
+  title={Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection},
+  author={Liu, Shilong and Zeng, Zhaoyang and Ren, Tianhe and Li, Feng and Zhang, Hao and Yang, Jie and Li, Chunyuan and Yang, Jianwei and Su, Hang and Zhu, Jun and others},
+  journal={arXiv preprint arXiv:2303.05499},
+  year={2023}
+}
+```
+
+**Original Project**: [IDEA-Research/GroundingDINO](https://github.com/IDEA-Research/GroundingDINO)
+**Paper**: [arXiv:2303.05499](https://arxiv.org/abs/2303.05499)
+
+### Research Benchmarks
+
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/grounding-dino-marrying-dino-with-grounded/zero-shot-object-detection-on-mscoco)](https://paperswithcode.com/sota/zero-shot-object-detection-on-mscoco?p=grounding-dino-marrying-dino-with-grounded)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/grounding-dino-marrying-dino-with-grounded/zero-shot-object-detection-on-odinw)](https://paperswithcode.com/sota/zero-shot-object-detection-on-odinw?p=grounding-dino-marrying-dino-with-grounded)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/grounding-dino-marrying-dino-with-grounded/object-detection-on-coco)](https://paperswithcode.com/sota/object-detection-on-coco?p=grounding-dino-marrying-dino-with-grounded)
+
+---
+
+## System Requirements
+
+| Component | Requirement                         |
+|-----------|-------------------------------------|
+| **Python** | 3.9 - 3.12                          |
+| **PyTorch** | 2.7.0 - 2.9.0                       |
+| **CUDA** (optional) | 12.6 - 13.0                         |
+| **C++ Compiler** | GCC 7+, Clang 5+, or MSVC 2019+     |
+| **GPU** (optional) | NVIDIA with Compute Capability 6.0+ |
+
+---
+
+## License
+
+Copyright (c) 2025 GhostCipher. All rights reserved.
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
+
+### Original GroundingDINO License
+
+```
+Copyright (c) 2023 IDEA. All Rights Reserved.
+Licensed under the Apache License, Version 2.0
+```
+
+This project maintains the original Apache 2.0 license and properly attributes the original GroundingDINO research team.
+
+---
+
+## Acknowledgments
+
+- **GroundingDINO Team** at IDEA Research for the original research and implementation
+- **Deformable DETR** for the multi-scale deformable attention mechanism
+- **DINO** for the transformer-based detection architecture
+- **PyTorch Team** for the excellent deep learning framework
+
+---
+
+## Links
+
+- **Homepage**: [github.com/ghostcipher1/GroundedDINO-VL](https://github.com/ghostcipher1/GroundedDINO-VL)
+- **PyPI**: [pypi.org/project/groundeddino_vl](https://pypi.org/project/groundeddino_vl/)
+- **Original GroundingDINO**: [github.com/IDEA-Research/GroundingDINO](https://github.com/IDEA-Research/GroundingDINO)
+- **Issues**: [github.com/ghostcipher1/GroundedDINO-VL/issues](https://github.com/ghostcipher1/GroundedDINO-VL/issues)
+
+---
+
+**Built with ❤️ for the computer vision community**

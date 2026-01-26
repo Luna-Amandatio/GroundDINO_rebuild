@@ -1,0 +1,2 @@
+[console_scripts]
+groundeddino-vl-server = groundeddino_vl.ls_backend.server:main
