@@ -1,3 +1,6 @@
+'''
+可视化各提示词推理结果
+'''
 import os
 os.environ['TRANSFORMERS_OFFLINE'] = '1'  # 强制离线模式
 os.environ['HF_HUB_OFFLINE'] = '1'# 禁用 Hugging Face Hub 检查
@@ -8,14 +11,16 @@ model_Ber = BertModel.from_pretrained(LOCAL_PATH,local_files_only=True)
 
 from groundeddino_vl import load_model, predict, annotate
 import cv2
+import warnings
+warnings.filterwarnings("ignore")
 
 IMAGE_LIST = ['./example/bear.jpg', './example/bird.jpg']
 classes = ['bear', 'bird']
 prompts = []
 
 model = load_model(
-    config_path="D:/Project/ComSen/GroundedDINO-VL-development/groundeddino_vl/models/configs/GroundingDINO_SwinB_cfg.py",
-    checkpoint_path=r"D:\model\dino\groundingdino_swinb_cogcoor.pth",
+    config_path=r"../../models/GroundingDINO_SwinB_cfg.py",
+    checkpoint_path = r"../../models/groundingdino_swinb_cogcoor.pth",
     device="cuda"  # or "cpu"
 )
 
@@ -45,3 +50,4 @@ for idx, prompt in enumerate(prompts):
         annotated_image = annotate(image, result, show_labels=True)
         file_name = caption + '.jpg'
         cv2.imwrite(file_name, annotated_image)
+print("运行完毕")

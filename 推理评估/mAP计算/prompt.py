@@ -1,3 +1,8 @@
+'''
+比较模型在各提示词下mAP
+'''
+
+
 import os
 os.environ['TRANSFORMERS_OFFLINE'] = '1'  # 强制离线模式
 os.environ['HF_HUB_OFFLINE'] = '1'# 禁用 Hugging Face Hub 检查
@@ -9,6 +14,8 @@ model_Ber = BertModel.from_pretrained(LOCAL_PATH,local_files_only=True)
 import warnings
 import json
 import numpy as np
+import torch
+
 from PIL import Image
 from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
@@ -35,13 +42,13 @@ json_path = os.path.join(base_path, "valid", "_annotations.coco.json")
 images_path = os.path.join(base_path, "valid")
 
 #配置文件与模型位置
-config_path = r"../../groundeddino_vl/models/configs/GroundingDINO_SwinB_cfg.py"
-checkpoint_path = r"D:\model\dino\groundingdino_swinb_cogcoor.pth"
+config_path = r"../../models/GroundingDINO_SwinB_cfg.py"
+checkpoint_path = r"../../models/groundingdino_swinb_cogcoor.pth"
 device = "cuda"
 
 #模型加载
 model = load_model(config_path=config_path, checkpoint_path=checkpoint_path, device=device)
-
+model = torch.compile(model,backend="inductor", mode="max-autotune")
 
 def xywh2xyxy(cx, cy, w, h):
     """将cxcywh转换为xyxy格式"""
@@ -71,13 +78,15 @@ def run_groundingdino_map(CLASSES):
 
         print(f"[{i + 1}/{len(img_infos)}] {img_info['file_name']})")
 
-        result = predict(
-            model=model,
-            image=image,
-            text_prompt=caption,
-            box_threshold=confidence,
-            text_threshold=text_threshold,
-        )
+        # 启用半精度推理
+        with torch.cuda.amp.autocast(dtype=torch.float16):
+            result = predict(
+                model=model,
+                image=image,
+                text_prompt=caption,
+                box_threshold=confidence,
+                text_threshold=text_threshold,
+            )
 
         # 处理boxes（关键修复！）
         if hasattr(result, 'boxes') and len(result.boxes) > 0:
