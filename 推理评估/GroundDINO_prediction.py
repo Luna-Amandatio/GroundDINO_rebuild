@@ -20,8 +20,8 @@ warnings.filterwarnings("ignore")
 import numpy as np
 import json
 import torch
+import cv2
 
-from PIL import Image
 from groundeddino_vl import load_model, predict
 from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
@@ -168,7 +168,7 @@ class GroundDINOInference:
         for i, img_info in enumerate(pbar):
             try:
                 img_path = self.images_dir + img_info['file_name']
-                image = np.array(Image.open(img_path).convert('RGB'))
+                image = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB)
             except:
                 continue
 
@@ -330,6 +330,7 @@ def clean():
 #测试
 #-------------------------
 if __name__ == "__main__":
+
     GroundDINO = GroundDINOInference(["bird","person"],0.1,0.1)
     GroundDINO.model_inference()
     GroundDINO.mAP_Calculation()
