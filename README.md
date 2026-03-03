@@ -12,12 +12,12 @@
 
 ### 项目结构
 
-├─assert          ----示例图片资源
-├─DATASET    ----数据集存放目录
-├─logs             ----profile生成的结果
-├─models       ----模型存放位置
-├─scripts         ----辅助脚本
-└─结果保存     ----可视化生成图片
+├─assert          ----示例图片资源   
+├─DATASET    ----数据集存放目录   
+├─logs             ----profile生成的结果   
+├─models       ----模型存放位置   
+├─scripts         ----辅助脚本   
+└─结果保存     ----可视化生成图片   
 
 
 
@@ -30,8 +30,9 @@
 ```bash
 ./编译安装.bat
 ```
-
-
+Ground DINO 模型下载 ：https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha2/groundingdino_swinb_cogcoor.pth   
+数据集下载 ： https://app.roboflow.com/ds/qHK8Q42lc8?key=27IHm68o5o  
+**注**：请将数据集放于DATASET文件夹，按 **数据集名/模式/xxx.json** 格式
 
 ---
 
