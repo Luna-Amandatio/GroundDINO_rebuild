@@ -83,6 +83,7 @@ class CLIPRerank:
         iou_threshold :
         box_threshold : GroundDINO的框置信度
         text_threshold : GroundDINO的文本区域置信度
+        clip_threshold : CLIP置信度最小保留阈值
         num : 单次推理的总图片数量
         alpha : 融合分数中CLIP比例
         #batch : 同时推理批次
@@ -117,6 +118,7 @@ class CLIPRerank:
                  iou_threshold = 0.5,
                  box_threshold = 0.5,
                  text_threshold = 0.5,
+                 clip_threshold=0.3,
                  dataset = 'Coco.v1i.coco-segmentation_2',
                  input_num = 100,
                  mode = "valid",
@@ -132,6 +134,7 @@ class CLIPRerank:
         self.iou_threshold = iou_threshold
         self.box_threshold = box_threshold
         self.text_threshold = text_threshold
+        self.clip_threshold = clip_threshold
         self.num = input_num
         self.alpha = alpha
 
@@ -190,6 +193,7 @@ class CLIPRerank:
 
         return model, processor
 
+
     def dataset_load(self):
         """加载数据集"""
         with Timer("数据集加载", enable=self.enable_timer):
@@ -242,12 +246,12 @@ class CLIPRerank:
             if class_name in self.category_map:
                 label_to_catid[i + 1] = self.category_map[class_name]
 
-        print(f"标签映射关系: {label_to_catid}")
-        print(f"类别名称到ID映射: {self.category_map}")
+        #print(f"标签映射关系: {label_to_catid}")
+        #print(f"类别名称到ID映射: {self.category_map}")
 
         for i, img_info in enumerate(pbar):
             need_timer = self.enable_timer and i < 10
-            clip_timer = self.enable_timer and i == 1
+
             try:
                 img_path = self.images_dir + img_info['file_name']
                 image = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB)
@@ -273,22 +277,19 @@ class CLIPRerank:
 
                 if hasattr(result, 'boxes') and len(result.boxes) > 0:
                     boxes = np.array(result.boxes)
-                    scores = np.array(result.scores)
+                    grounddino_scores = np.array(result.scores)
                     labels = result.labels
+
+                    #储存裁剪后的图片 与 有效分数 及 COCO格式 [x,y,w,h]框
+                    valid_image = []
+                    valid_boxes = []
+                    valid_scores = []
 
                     # 反归一化 cxcywh -> 像素cxcywh
                     boxes_cxcywh = boxes * np.array([img_w, img_h, img_w, img_h])
 
-                    for box_cxcywh, score, label in zip(boxes_cxcywh, scores, labels):
-                        # 关键修改：使用部分匹配查找类别ID（仿照GL_only.py）
-                        category_id = None
-                        for class_name, cat_id in self.category_map.items():
-                            if class_name in label:  # 不区分大小写的部分匹配
-                                category_id = cat_id
-                                break
+                    for box_cxcywh, score, label in zip(boxes_cxcywh, grounddino_scores, labels):
 
-                        if category_id is None:
-                            continue
 
                         cx, cy, w, h = box_cxcywh
 
@@ -301,21 +302,32 @@ class CLIPRerank:
                         height = max(1, y2 - y1)
 
                         bbox = [x1, y1, width, height]
-
                         cropped = image[int(y1):int(y2), int(x1):int(x2)]
-                        inputs = self.processor(text=self.input, images=cropped, return_tensors="pt", padding=True)
+
+                        valid_image.append(cropped)
+                        valid_boxes.append(bbox)
+                        valid_scores.append(score)
+
+                    #CLIP批量推理
+                    with Timer(f"图片CLIP推理", enable=need_timer):
+                        inputs = self.processor(text=self.input, images=valid_image, return_tensors="pt", padding=True)
                         inputs = {k: v.to(self.device) for k, v in inputs.items()}  # 移到GPU
                         with torch.no_grad():
-                            with Timer(f"图片CLIP推理", enable=clip_timer):
-                                outputs = self.clip(**inputs)
+                            outputs = self.clip(**inputs)
 
-                                probs = outputs.logits_per_image.softmax(dim=1)[0]  # [80个类别的分数]
-                                best_idx = probs.argmax().item()
-                                best_class = self.input[best_idx]
-                                best_clip_score = probs[best_idx].item()
-                                #print(f"best_class:{best_class}")
-                        # 融合分数
-                        fused_score = score * self.alpha + best_clip_score * (1 - self.alpha)
+                            probs = outputs.logits_per_image.softmax(dim=-1)  # [num_boxes, num_classes]
+                            best_scores, best_indices = probs.max(dim=-1)  # 获取每个框的最佳分数和索引
+                            best_scores = best_scores.cpu().tolist()  # 转换为列表
+                            best_classes = [self.input[idx] for idx in best_indices.cpu().tolist()]
+                            #print(f"best_class:{best_class}")
+
+                    #保留结果
+                    for bbox,GroundDINO_score ,clip_score, best_class in zip(valid_boxes,valid_scores, best_scores, best_classes):
+
+                        if clip_score > self.clip_threshold:  # 只保留CLIP高置信度的预测
+                            fused_score = GroundDINO_score * self.alpha + clip_score * (1 - self.alpha)
+                        else:
+                            continue  # 跳过低CLIP置信度的检测
 
                         #类别匹配
                         category_id = self.category_map.get(best_class, -1)
