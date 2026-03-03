@@ -35,14 +35,14 @@ List = ['airplane', 'apple', 'backpack', 'banana', 'baseball bat', 'baseball glo
 
 
 if __name__ == "__main__":
-    for confidence in np.arange(0.15, 0.5, 0.05):
+    for confidence in np.arange(0.1, 0.5, 0.1):
         for alpha in np.arange(0, 1.2, 0.2):
             rerank_clip = CLIPRerank(caption=List,
                                      alpha=alpha,
                                      iou_threshold=0.1,
                                      box_threshold=confidence,
                                      text_threshold=0.35,
-                                     input_num=500,
+                                     input_num=50,
                                      output_file=f"GroundDINO与CLIP混合模型在多类别输入下mAP随confidence与alpha变化",
                                      enable_timer=False,
                                      nms=True,
